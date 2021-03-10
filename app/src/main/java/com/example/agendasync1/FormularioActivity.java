@@ -1,7 +1,10 @@
 package com.example.agendasync1;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.example.agendasync1.dao.AlunoDAO;
@@ -48,6 +53,8 @@ public class FormularioActivity extends AppCompatActivity {
 
     }
 
+
+
     public void tiraFoto(View view){
         Intent intentCamera = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         caminhoFoto = getExternalFilesDir(null) + "/" + System.currentTimeMillis() + ".jpg";
@@ -56,7 +63,17 @@ public class FormularioActivity extends AppCompatActivity {
         intentCamera.putExtra(MediaStore.EXTRA_OUTPUT,
                 FileProvider.getUriForFile(FormularioActivity.this,
                         BuildConfig.APPLICATION_ID + ".provider", arquivoFoto));
-        startActivityForResult(intentCamera, CODIGO_CAMERA);
+
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED) {
+            startActivityForResult(intentCamera, CODIGO_CAMERA);
+
+        } else {
+            Toast.makeText(this, "Por Favor Ative as Permissões de Câmera", Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     @Override
